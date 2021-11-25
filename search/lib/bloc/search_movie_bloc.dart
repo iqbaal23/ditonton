@@ -4,16 +4,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:search/search.dart';
 import 'package:rxdart/rxdart.dart';
 
-part 'search_event.dart';
-part 'search_state.dart';
+part 'search_movie_event.dart';
+part 'search_movie_state.dart';
 
-class SearchBloc extends Bloc<SearchEvent, SearchState> {
+class SearchMovieBloc extends Bloc<SearchEvent, SearchMovieState> {
   final SearchMovies _searchMovies;
 
-  SearchBloc(this._searchMovies) : super(SearchEmpty());
+  SearchMovieBloc(this._searchMovies) : super(SearchEmpty());
 
   @override
-  Stream<SearchState> mapEventToState(
+  Stream<SearchMovieState> mapEventToState(
     SearchEvent event,
   ) async* {
     if (event is OnQueryChanged) {
@@ -34,9 +34,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   }
 
   @override
-  Stream<Transition<SearchEvent, SearchState>> transformEvents(
+  Stream<Transition<SearchEvent, SearchMovieState>> transformEvents(
     Stream<SearchEvent> events,
-    TransitionFunction<SearchEvent, SearchState> transiionFn,
+    TransitionFunction<SearchEvent, SearchMovieState> transiionFn,
   ) {
     return super.transformEvents(
       events.debounceTime(const Duration(milliseconds: 500)),

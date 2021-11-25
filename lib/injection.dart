@@ -25,7 +25,8 @@ import 'package:core/domain/usecases/get_watchlist_tvs.dart';
 import 'package:core/domain/usecases/get_tv_watchlist_status.dart';
 import 'package:core/domain/usecases/remove_tv_watchlist.dart';
 import 'package:core/domain/usecases/save_tv_watchlist.dart';
-import 'package:search/bloc/search_bloc.dart';
+import 'package:search/bloc/search_movie_bloc.dart';
+import 'package:search/bloc/search_tv_bloc.dart';
 import 'package:search/domain/usecases/search_movies.dart';
 import 'package:search/domain/usecases/search_tvs.dart';
 import 'package:core/presentation/provider/movie_detail_notifier.dart';
@@ -48,7 +49,12 @@ final locator = GetIt.instance;
 void init() {
   // bloc
   locator.registerFactory(
-    () => SearchBloc(
+    () => SearchMovieBloc(
+      locator(),
+    ),
+  );
+  locator.registerFactory(
+    () => SearchTvBloc(
       locator(),
     ),
   );

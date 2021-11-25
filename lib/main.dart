@@ -7,7 +7,8 @@ import 'package:core/presentation/pages/popular_movies_page.dart';
 import 'package:core/presentation/pages/popular_tvs_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:search/bloc/search_bloc.dart';
+import 'package:search/bloc/search_movie_bloc.dart';
+import 'package:search/bloc/search_tv_bloc.dart';
 import 'package:search/search.dart';
 import 'package:core/presentation/pages/top_rated_movies_page.dart';
 import 'package:core/presentation/pages/top_rated_tvs_page.dart';
@@ -79,7 +80,10 @@ class MyApp extends StatelessWidget {
           create: (_) => di.locator<WatchlistTvNotifier>(),
         ),
         BlocProvider(
-          create: (_) => di.locator<SearchBloc>(),
+          create: (_) => di.locator<SearchMovieBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => di.locator<SearchTvBloc>(),
         )
       ],
       child: MaterialApp(

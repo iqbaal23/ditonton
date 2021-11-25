@@ -1,7 +1,7 @@
 import 'package:core/core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:search/bloc/search_bloc.dart';
-import '../provider/tv_search_notifier.dart';
+import 'package:search/bloc/search_movie_bloc.dart';
+import 'package:search/bloc/search_tv_bloc.dart' as tv;
 import 'package:core/presentation/widgets/movie_card_list.dart';
 import 'package:core/presentation/widgets/tv_card_list.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +48,7 @@ class SearchMoviePage extends StatelessWidget {
         children: [
           TextField(
             onChanged: (query) {
-              context.read<SearchBloc>().add(OnQueryChanged(query));
+              context.read<SearchMovieBloc>().add(OnQueryChanged(query));
             },
             decoration: InputDecoration(
               hintText: 'Search Movie',
@@ -62,7 +62,7 @@ class SearchMoviePage extends StatelessWidget {
             'Search Result',
             style: kHeading6,
           ),
-          BlocBuilder<SearchBloc, SearchState>(
+          BlocBuilder<SearchMovieBloc, SearchMovieState>(
             builder: (context, state) {
               if (state is SearchLoading) {
                 return Center(
@@ -112,9 +112,8 @@ class SearchTvPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextField(
-            onSubmitted: (query) {
-              Provider.of<TvSearchNotifier>(context, listen: false)
-                  .fetchTvSearch(query);
+            onChanged: (query) {
+              context.read<tv.SearchTvBloc>().add(tv.OnQueryChanged(query));
             },
             decoration: InputDecoration(
               hintText: 'Search Tv Series',
@@ -128,19 +127,20 @@ class SearchTvPage extends StatelessWidget {
             'Search Result',
             style: kHeading6,
           ),
-          Consumer<TvSearchNotifier>(
-            builder: (context, data, child) {
-              if (data.state == RequestState.Loading) {
+          BlocBuilder<tv.SearchTvBloc, tv.SearchTvState>(
+            builder: (context, state) {
+              if (state is tv.SearchLoading) {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
-              } else if (data.state == RequestState.Loaded) {
-                final result = data.searchResult;
+              } else if (state is tv.SearchHasData) {
+                final result = state.results;
+                print(result);
                 return Expanded(
                   child: ListView.builder(
                     padding: const EdgeInsets.all(8),
                     itemBuilder: (context, index) {
-                      final tv = data.searchResult[index];
+                      final tv = result[index];
                       return TvCard(tv);
                     },
                     itemCount: result.length,
