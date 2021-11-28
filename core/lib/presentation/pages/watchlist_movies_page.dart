@@ -1,7 +1,6 @@
+import 'package:core/presentation/bloc/watchlist_movies/watchlist_movies_bloc.dart';
 import 'package:core/utils/utils.dart';
-
-import '../../core.dart';
-import '../provider/watchlist_movie_notifier.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/movie_card_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,9 +17,9 @@ class _WatchlistMoviesPageState extends State<WatchlistMoviesPage>
   @override
   void initState() {
     super.initState();
-    Future.microtask(() =>
-        Provider.of<WatchlistMovieNotifier>(context, listen: false)
-            .fetchWatchlistMovies());
+    Future.microtask(() {
+      context.read<WatchlistMoviesBloc>().add(WatchlistMoviesHasDataEvent());
+    });
   }
 
   @override
@@ -29,10 +28,6 @@ class _WatchlistMoviesPageState extends State<WatchlistMoviesPage>
     routeObserver.subscribe(this, ModalRoute.of(context)!);
   }
 
-  void didPopNext() {
-    Provider.of<WatchlistMovieNotifier>(context, listen: false)
-        .fetchWatchlistMovies();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,24 +37,27 @@ class _WatchlistMoviesPageState extends State<WatchlistMoviesPage>
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Consumer<WatchlistMovieNotifier>(
-          builder: (context, data, child) {
-            if (data.watchlistState == RequestState.Loading) {
+        child: BlocBuilder<WatchlistMoviesBloc, WatchlistMoviesState>(
+          builder: (context, state) {
+            if (state is WatchlistMoviesLoading) {
               return Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (data.watchlistState == RequestState.Loaded) {
+            } else if (state is WatchlistMoviesHasData) {
               return ListView.builder(
                 itemBuilder: (context, index) {
-                  final movie = data.watchlistMovies[index];
-                  return MovieCard(movie);
+                  return MovieCard(state.results[index]);
                 },
-                itemCount: data.watchlistMovies.length,
+                itemCount: state.results.length,
               );
+            } else if (state is WatchlistMoviesError) {
+              return Text(state.message);
+            } else if (state is WatchlistMoviesEmpty) {
+              return Center(child: Text('Empty Data'));
             } else {
               return Center(
                 key: Key('error_message'),
-                child: Text(data.message),
+                child: Text('There is something wrong'),
               );
             }
           },

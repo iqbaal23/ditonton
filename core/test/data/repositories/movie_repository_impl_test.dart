@@ -222,9 +222,7 @@ void main() {
           .thenAnswer((_) async => tMovieResponse);
       // act
       final result = await repository.getMovieDetail(tId);
-      // assert\
-      print(result);
-      print(Right(testMovieDetail));
+      // assert
       verify(mockRemoteDataSource.getMovieDetail(tId));
       expect(result, equals(Right(testMovieDetail)));
     });

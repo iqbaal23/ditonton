@@ -1,5 +1,5 @@
-import '../../core.dart';
-import '../provider/top_rated_tvs_notifier.dart';
+import 'package:core/presentation/bloc/top_rated_tvs/top_rated_tvs_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/tv_card_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,9 +15,9 @@ class _TopRatedTvsPageState extends State<TopRatedTvsPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() =>
-        Provider.of<TopRatedTvsNotifier>(context, listen: false)
-            .fetchTopRatedTvs());
+    Future.microtask(
+      () => context.read<TopRatedTvsBloc>().add(TopRatedTvsHasDataEvent()),
+    );
   }
 
   @override
@@ -28,24 +28,28 @@ class _TopRatedTvsPageState extends State<TopRatedTvsPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Consumer<TopRatedTvsNotifier>(
-          builder: (context, data, child) {
-            if (data.state == RequestState.Loading) {
+        child: BlocBuilder<TopRatedTvsBloc, TopRatedTvsState>(
+          builder: (context, state) {
+            if (state is TopRatedTvsLoading) {
               return Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (data.state == RequestState.Loaded) {
+            } else if (state is TopRatedTvsHasData) {
               return ListView.builder(
                 itemBuilder: (context, index) {
-                  final tv = data.tvs[index];
+                  final tv = state.results[index];
                   return TvCard(tv);
                 },
-                itemCount: data.tvs.length,
+                itemCount: state.results.length,
               );
+            } else if (state is TopRatedTvsError) {
+              return Text(state.message);
+            } else if (state is TopRatedTvsEmpty) {
+              return Text('Empty Data');
             } else {
               return Center(
                 key: Key('error_message'),
-                child: Text(data.message),
+                child: Text('There is something wrong'),
               );
             }
           },

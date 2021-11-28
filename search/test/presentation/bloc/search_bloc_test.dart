@@ -6,8 +6,8 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:search/bloc/search_movie_bloc.dart';
-import 'package:search/bloc/search_tv_bloc.dart' as tv;
+import 'package:search/presentation/bloc/search_movie_bloc.dart';
+import 'package:search/presentation/bloc/search_tv_bloc.dart' as tv;
 import 'package:search/domain/usecases/search_movies.dart';
 import 'package:search/domain/usecases/search_tvs.dart';
 
@@ -92,7 +92,7 @@ void main() {
     expect(searchTvBloc.state, tv.SearchEmpty());
   });
 
-    final tTvModel = Tv(
+  final tTvModel = Tv(
     backdropPath: '/muth4OYamXf41G2evdrLEg8d3om.jpg',
     genreIds: [14, 28],
     id: 557,
