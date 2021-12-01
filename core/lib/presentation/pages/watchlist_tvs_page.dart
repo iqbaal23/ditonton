@@ -21,6 +21,10 @@ class _WatchlistTvsPageState extends State<WatchlistTvsPage> with RouteAware {
     });
   }
 
+  void didPopNext() {
+    context.read<WatchlistTvsBloc>().add(WatchlistTvsHasDataEvent());
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();

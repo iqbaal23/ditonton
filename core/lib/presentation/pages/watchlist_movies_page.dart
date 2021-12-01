@@ -22,6 +22,10 @@ class _WatchlistMoviesPageState extends State<WatchlistMoviesPage>
     });
   }
 
+  void didPopNext() {
+    context.read<WatchlistMoviesBloc>().add(WatchlistMoviesHasDataEvent());
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
